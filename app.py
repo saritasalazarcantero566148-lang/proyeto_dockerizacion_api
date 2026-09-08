@@ -1,7 +1,8 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import os
+
 
 app = Flask(__name__)
 
@@ -42,6 +43,9 @@ class Tarea(db.Model):
 def salud():
     return jsonify({"estado": "ok"})
 
+@app.route("/")
+def inicio():
+    return render_template("index.html")
 
 @app.route("/api/tareas", methods=["GET"])
 def listar_tareas():
