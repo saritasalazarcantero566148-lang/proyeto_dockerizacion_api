@@ -1,59 +1,260 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gestor de Tareas</title>
+
 <style>
+  * {
+    box-sizing: border-box;
+  }
+
   body {
-    font-family: Arial, sans-serif;
-    max-width: 600px;
-    margin: 40px auto;
-    background: #f4f4f4;
-    color: #222;
-  }
-  h1 { text-align: center; }
-  form {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f5f6f8;
+    color: #252525;
     display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
+    justify-content: center;
+    padding: 60px 20px;
   }
-  input[type=text] {
+
+  .contenedor {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  .encabezado {
+    margin-bottom: 28px;
+  }
+
+  .encabezado h1 {
+    margin: 0 0 8px;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .encabezado p {
+    margin: 0;
+    color: #777;
+    font-size: 15px;
+  }
+
+  .panel {
+    background: #ffffff;
+    border: 1px solid #e8e8e8;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+  }
+
+  .formulario {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .formulario input {
     flex: 1;
-    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 13px 15px;
+    font-size: 15px;
+    outline: none;
+    transition: 0.2s;
   }
-  button {
-    padding: 8px 14px;
+
+  .formulario input:focus {
+    border-color: #999;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.04);
+  }
+
+  .btn-agregar {
+    border: none;
+    background: #252525;
+    color: white;
+    padding: 0 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
+    transition: 0.2s;
   }
-  ul { list-style: none; padding: 0; }
-  li {
-    background: white;
-    padding: 10px;
-    margin-bottom: 8px;
-    border-radius: 6px;
+
+  .btn-agregar:hover {
+    background: #444;
+  }
+
+  .titulo-seccion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .titulo-seccion h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .lista {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .tarea {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 15px;
+    padding: 15px 4px;
+    border-bottom: 1px solid #eeeeee;
   }
-  li.completada span.titulo {
+
+  .tarea:last-child {
+    border-bottom: none;
+  }
+
+  .informacion-tarea {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .titulo {
+    display: block;
+    font-size: 15px;
+    font-weight: 500;
+    word-break: break-word;
+  }
+
+  .estado {
+    display: inline-block;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #999;
+  }
+
+  .completada .titulo {
     text-decoration: line-through;
-    color: #888;
+    color: #999;
   }
+
+  .completada .estado {
+    color: #5f946b;
+  }
+
+  .acciones {
+    display: flex;
+    gap: 7px;
+    flex-shrink: 0;
+  }
+
   .acciones button {
-    margin-left: 6px;
+    border: 1px solid #e1e1e1;
+    background: #fff;
+    color: #555;
+    padding: 7px 11px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .acciones button:hover {
+    background: #f5f5f5;
+  }
+
+  .acciones .eliminar {
+    color: #b05b5b;
+    border-color: #ead5d5;
+  }
+
+  .acciones .eliminar:hover {
+    background: #faf1f1;
+  }
+
+  .vacio {
+    text-align: center;
+    padding: 30px 10px;
+    color: #999;
+    font-size: 14px;
+  }
+
+  @media (max-width: 600px) {
+    body {
+      padding: 30px 15px;
+    }
+
+    .encabezado h1 {
+      font-size: 27px;
+    }
+
+    .panel {
+      padding: 18px;
+    }
+
+    .formulario {
+      flex-direction: column;
+    }
+
+    .btn-agregar {
+      height: 44px;
+    }
+
+    .tarea {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .acciones {
+      width: 100%;
+    }
+
+    .acciones button {
+      flex: 1;
+    }
   }
 </style>
 </head>
+
 <body>
 
-<h1>Gestor de Tareas</h1>
+<div class="contenedor">
 
-<form id="form-tarea">
-  <input type="text" id="titulo" placeholder="Nueva tarea..." required>
-  <button type="submit">Agregar</button>
-</form>
+  <div class="encabezado">
+    <h1>Gestor de Tareas</h1>
+    <p>Organiza tus actividades de forma sencilla.</p>
+  </div>
 
-<ul id="lista-tareas"></ul>
+  <div class="panel">
+
+    <form id="form-tarea" class="formulario">
+      <input
+        type="text"
+        id="titulo"
+        placeholder="Escribe una nueva tarea..."
+        required
+      >
+      <button type="submit" class="btn-agregar">
+        Agregar tarea
+      </button>
+    </form>
+
+    <div class="titulo-seccion">
+      <h2>Mis tareas</h2>
+    </div>
+
+    <ul id="lista-tareas" class="lista"></ul>
+
+  </div>
+
+</div>
 
 <script>
 const API = "/api/tareas";
@@ -61,51 +262,104 @@ const API = "/api/tareas";
 async function cargarTareas() {
   const res = await fetch(API);
   const tareas = await res.json();
+
   const lista = document.getElementById("lista-tareas");
   lista.innerHTML = "";
 
+  if (tareas.length === 0) {
+    lista.innerHTML = `
+      <li class="vacio">
+        No tienes tareas todavía.
+      </li>
+    `;
+    return;
+  }
+
   tareas.forEach(tarea => {
     const li = document.createElement("li");
-    if (tarea.completada) li.classList.add("completada");
+
+    li.className = "tarea";
+
+    if (tarea.completada) {
+      li.classList.add("completada");
+    }
 
     li.innerHTML = `
-      <span class="titulo">${tarea.titulo}</span>
-      <span class="acciones">
+      <div class="informacion-tarea">
+        <span class="titulo">${tarea.titulo}</span>
+        <span class="estado">
+          ${tarea.completada ? "Tarea completada" : "Pendiente"}
+        </span>
+      </div>
+
+      <div class="acciones">
+
         <button onclick="marcarCompletada(${tarea.id}, ${!tarea.completada})">
           ${tarea.completada ? "Deshacer" : "Completar"}
         </button>
-        <button onclick="eliminarTarea(${tarea.id})">Eliminar</button>
-      </span>
+
+        <button
+          class="eliminar"
+          onclick="eliminarTarea(${tarea.id})">
+          Eliminar
+        </button>
+
+      </div>
     `;
+
     lista.appendChild(li);
   });
 }
 
-document.getElementById("form-tarea").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const titulo = document.getElementById("titulo").value;
+document
+  .getElementById("form-tarea")
+  .addEventListener("submit", async (e) => {
 
-  await fetch(API, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ titulo })
+    e.preventDefault();
+
+    const titulo = document
+      .getElementById("titulo")
+      .value
+      .trim();
+
+    if (!titulo) return;
+
+    await fetch(API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        titulo: titulo
+      })
+    });
+
+    document.getElementById("titulo").value = "";
+
+    cargarTareas();
   });
-
-  document.getElementById("titulo").value = "";
-  cargarTareas();
-});
 
 async function marcarCompletada(id, nuevoEstado) {
+
   await fetch(`${API}/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ completada: nuevoEstado })
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      completada: nuevoEstado
+    })
   });
+
   cargarTareas();
 }
 
 async function eliminarTarea(id) {
-  await fetch(`${API}/${id}`, { method: "DELETE" });
+
+  await fetch(`${API}/${id}`, {
+    method: "DELETE"
+  });
+
   cargarTareas();
 }
 
@@ -114,3 +368,4 @@ cargarTareas();
 
 </body>
 </html>
+```
